@@ -1,5 +1,4 @@
-import sinon from 'sinon'
-import { datasourceManager } from './manager/datasource-manager'
+import { mockDatasourceManager } from './manager/mock-datasource-manager'
 import { MockPagingAndSortingRepository } from './repository/MockPagingAndSortingRepository'
 import { DriverFactory } from 'typeorm/driver/DriverFactory'
 import { DataSource, EntityManager, EntityTarget, QueryRunner } from 'typeorm'
@@ -17,9 +16,18 @@ export interface MockOptions {
     entities: any[]
 }
 
-export const MockDB = {
-    create: async (options: MockOptions) => {
-        const entities = options.entities || []
+class MockDB {
+    options: MockOptions
+
+    constructor (options: MockOptions) {
+        this.options = options
+    }
+
+    async initialize () {
+        // jest.mock('typeorm-transactional', () => ({
+        //     Transactional: () => () => ({})
+        // }))
+        const entities = this.options.entities || []
         DriverFactory.prototype.create = (connection: DataSource) => {
             return new MockDriver(connection)
         }
@@ -34,32 +42,18 @@ export const MockDB = {
         EntityMetadataValidator.prototype.validate = () => {
             return true
         }
-        connection = await datasourceManager.open({
+        connection = await mockDatasourceManager.open({
             entities
-        })
-        sinon.stub(datasourceManager, 'getConnection').callsFake(() => {
-            return connection
-        })
-        sinon.stub(datasourceManager, 'getCustomRepository').callsFake((repositoryClass: any, entityClass: any) => {
-            const repository = map.get(entityClass.name)
-            if (repository) {
-                return repository
-            }
-            throw Error(`Repository is not mocked: ${repositoryClass}`)
-        })
-        sinon.stub(datasourceManager, 'getRepository').callsFake((entityClass: any): any => {
-            const repository = map.get(entityClass.name)
-            if (repository) {
-                return repository
-            }
-            throw Error(`Repository is not mocked: ${entityClass}`)
         })
         map = new Map()
         entities.forEach(entityClass => {
             map.set(entityClass.name, new MockPagingAndSortingRepository(entityClass, connection.manager))
         })
-    },
-    reset () {
-        sinon.restore()
+        return connection
     }
+}
+
+export {
+    mockDatasourceManager,
+    MockDB
 }

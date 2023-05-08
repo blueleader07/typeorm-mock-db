@@ -14,18 +14,6 @@ import { MockDriver } from '../driver/MockDriver'
 let connection: any = null
 let entityManager: any = null
 
-DriverFactory.prototype.create = (connection: DataSource) => {
-    return new MockDriver(connection)
-}
-EntityManager.prototype.getRepository = <Entity extends ObjectLiteral>(target: EntityTarget<Entity>): MockPagingAndSortingRepository<Entity> => {
-    const repository: any = new MockPagingAndSortingRepository(target, entityManager, EntityManager.prototype.queryRunner)
-    return repository
-}
-EntityManagerFactory.prototype.create = (connection: DataSource, queryRunner?: QueryRunner): EntityManager => {
-    entityManager = new MockEntityManager(connection)
-    return entityManager
-}
-
 export class DatasourceManagerOptions {
     entities?: ((Function | string | EntitySchema))[];
     synchronize?: boolean
@@ -36,10 +24,21 @@ const DEFAULT_OPTIONS: DatasourceManagerOptions = {
     synchronize: false
 }
 
-export const datasourceManager = {
+export const mockDatasourceManager = {
     async open (options: DatasourceManagerOptions) {
-        options = Object.assign({ ...DEFAULT_OPTIONS }, options)
         if (!connection) {
+            DriverFactory.prototype.create = (connection: DataSource) => {
+                return new MockDriver(connection)
+            }
+            EntityManager.prototype.getRepository = <Entity extends ObjectLiteral>(target: EntityTarget<Entity>): MockPagingAndSortingRepository<Entity> => {
+                const repository: any = new MockPagingAndSortingRepository(target, entityManager, EntityManager.prototype.queryRunner)
+                return repository
+            }
+            EntityManagerFactory.prototype.create = (connection: DataSource, queryRunner?: QueryRunner): EntityManager => {
+                entityManager = new MockEntityManager(connection)
+                return entityManager
+            }
+            options = Object.assign({ ...DEFAULT_OPTIONS }, options)
             const connectionOptions: any = {
                 type: 'mockdb',
                 entities: options?.entities
@@ -70,7 +69,7 @@ export const datasourceManager = {
     },
 
     getRepository<Entity extends ObjectLiteral> (target: EntityTarget<Entity>, name?: string): MockPagingAndSortingRepository<Entity> {
-        return datasourceManager.getConnection(name).getRepository(target)
+        return mockDatasourceManager.getConnection(name).getRepository(target)
     },
 
     async close () {
@@ -79,21 +78,21 @@ export const datasourceManager = {
 }
 
 export const open = async (options: DatasourceManagerOptions) => {
-    return datasourceManager.open(options)
+    return mockDatasourceManager.open(options)
 }
 
 export const getConnection = (name?: string) => {
-    return datasourceManager.getConnection(name)
+    return mockDatasourceManager.getConnection(name)
 }
 
 export const getCustomRepository = <T, Entity> (customRepository: { new(a: any, b: any): T ;}, customEntity: ObjectType<Entity>, name?: string): T => {
-    return datasourceManager.getCustomRepository(customRepository, customEntity)
+    return mockDatasourceManager.getCustomRepository(customRepository, customEntity)
 }
 
 export const getRepository = <Entity extends ObjectLiteral> (target: EntityTarget<Entity>, name?: string): MockPagingAndSortingRepository<Entity> => {
-    return datasourceManager.getRepository(target, name)
+    return mockDatasourceManager.getRepository(target, name)
 }
 
 export const close = () => {
-    return datasourceManager.close()
+    return mockDatasourceManager.close()
 }

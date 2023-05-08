@@ -1,16 +1,13 @@
 import { MockDB } from '../../src'
 import { Dummy } from '../entities/dummy'
-import { getRepository } from '../../src/manager/datasource-manager'
+import { getRepository } from '../../src/manager/mock-datasource-manager'
 import sinon from 'sinon'
 import expect from 'expect'
 describe('mock-entity-manager', () => {
-    beforeEach(() => {
-        MockDB.create({
+    beforeEach(async () => {
+        await new MockDB({
             entities: [Dummy]
-        })
-    })
-    afterEach(() => {
-        MockDB.reset()
+        }).initialize()
     })
     it('happy path', async () => {
         const dummy = new Dummy()
