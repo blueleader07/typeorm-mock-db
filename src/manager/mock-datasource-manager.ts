@@ -13,6 +13,7 @@ import { MockDriver } from '../driver/MockDriver'
 
 let connection: any = null
 let entityManager: any = null
+const map = new Map()
 
 export class DatasourceManagerOptions {
     entities?: ((Function | string | EntitySchema))[];
@@ -65,11 +66,21 @@ export const mockDatasourceManager = {
     },
 
     getCustomRepository<T, Entity> (customRepository: { new(a: any, b: any): T ;}, customEntity: ObjectType<Entity>, name?: string): T {
-        return new customRepository(customEntity, connection.createEntityManager())
+        let repository: any = map.get(customEntity)
+        if (!repository) {
+            repository = new customRepository(customEntity, connection.createEntityManager())
+            map.set(customEntity, repository)
+        }
+        return repository
     },
 
     getRepository<Entity extends ObjectLiteral> (target: EntityTarget<Entity>, name?: string): MockPagingAndSortingRepository<Entity> {
-        return mockDatasourceManager.getConnection(name).getRepository(target)
+        let repository: any = map.get(target)
+        if (!repository) {
+            repository = mockDatasourceManager.getConnection(name).getRepository(target)
+            map.set(target, repository)
+        }
+        return repository
     },
 
     async close () {
