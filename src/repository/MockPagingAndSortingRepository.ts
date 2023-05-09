@@ -1,4 +1,12 @@
-import { DeepPartial, FindOptions, ObjectLiteral, Repository, TypeORMError } from 'typeorm'
+import {
+    DeepPartial,
+    FindOneOptions,
+    FindOptions,
+    FindOptionsWhere,
+    ObjectLiteral,
+    Repository,
+    TypeORMError
+} from 'typeorm'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
 
 interface Order {
@@ -45,6 +53,38 @@ export class MockPagingAndSortingRepository<Entity extends ObjectLiteral> extend
     }
 
     /** DynamoDB Compatible **/
+    async get (key: any) {
+        throw new TypeORMError('get is not stubbed.')
+    }
+
+    async find (options?: FindOptions | any): Promise<Entity[]> {
+        throw new TypeORMError('find is not stubbed.')
+    }
+
+    async findAll (options?: FindOptions): Promise<Entity[]> {
+        throw new TypeORMError('findAll is not stubbed.')
+    }
+
+    /**
+     * Finds first entity by a given find options.
+     * If entity was not found in the database - returns null.
+     */
+    async findOne (options: FindOneOptions<Entity> | string): Promise<Entity | null> {
+        throw new TypeORMError('findOne is not stubbed.')
+    }
+
+    /**
+     * Finds first entity by a given find options.
+     * If entity was not found in the database - returns null.
+     */
+    async findOneBy (where: FindOptionsWhere<Entity>): Promise<Entity | null> {
+        throw new TypeORMError('findOneBy is not stubbed.')
+    }
+
+    add (options: any) {
+        throw new TypeORMError('add is not stubbed.')
+    }
+
     put (content: DeepPartial<Entity> | DeepPartial<Entity>[]) {
         throw new TypeORMError('put is not stubbed.')
     }
