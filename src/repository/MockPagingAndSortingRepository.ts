@@ -122,20 +122,20 @@ export class MockPagingAndSortingRepository<Entity extends ObjectLiteral> extend
     }
 
     batchRead (keys: any[]) {
-        throw new TypeORMError('deleteQueryBatch is not stubbed.')
+        throw new TypeORMError('batchRead is not stubbed.')
     }
 
     batchWrite (writes: any[]) {
-        throw new TypeORMError('deleteQueryBatch is not stubbed.')
+        throw new TypeORMError('batchWrite is not stubbed.')
     }
 
     updateExpression (
         options: any
     ): Promise<any> {
-        throw new TypeORMError('deleteQueryBatch is not stubbed.')
+        throw new TypeORMError('updateExpression is not stubbed.')
     }
 
     async streamAll () {
-        throw new TypeORMError('deleteQueryBatch is not stubbed.')
+        throw new TypeORMError('streamAll is not stubbed.')
     }
 }
