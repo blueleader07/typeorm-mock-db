@@ -104,8 +104,8 @@ export class MockQueryRunner implements QueryRunner {
     stream (
         query: string,
         parameters?: any[],
-        onEnd?: Function,
-        onError?: Function
+        onEnd?: () => void,
+        onError?: (error: Error) => void
     ): Promise<ReadStream> {
         throw new TypeORMError(
             'This operation is not supported by Mock driver.'
@@ -845,6 +845,20 @@ export class MockQueryRunner implements QueryRunner {
      */
     afterMigration (): Promise<void> {
         return Promise.resolve()
+    }
+
+    /**
+     * Not implemented - Mock method.
+     */
+    changeTableComment (tableOrName: any, comment?: string): Promise<void> {
+        throw new TypeORMError('changeTableComment is not implemented in MockQueryRunner.')
+    }
+
+    /**
+     * Not implemented - Mock method.
+     */
+    async sql<T = any> (strings: TemplateStringsArray, ...values: unknown[]): Promise<T> {
+        throw new TypeORMError('sql is not implemented in MockQueryRunner.')
     }
 
     // -------------------------------------------------------------------------

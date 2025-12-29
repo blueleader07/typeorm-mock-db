@@ -1,5 +1,6 @@
 import {
     DeepPartial,
+    DeleteResult,
     FindOneOptions,
     FindOptions,
     FindOptionsWhere,
@@ -109,15 +110,15 @@ export class MockPagingAndSortingRepository<Entity extends ObjectLiteral> extend
         throw new TypeORMError('deleteMany is not stubbed.')
     }
 
-    async deleteAll (keyMapper?: any) {
+    async deleteAll (keyMapper?: any): Promise<DeleteResult> {
         throw new TypeORMError('deleteAll is not stubbed.')
     }
 
-    deleteAllBy (options: FindOptions, keyMapper?: any) {
+    deleteAllBy (options: FindOptions, keyMapper?: any): Promise<DeleteResult> {
         throw new TypeORMError('deleteAllBy is not stubbed.')
     }
 
-    async deleteQueryBatch (options: FindOptions, keyMapper?: any) {
+    async deleteQueryBatch (options: FindOptions, keyMapper?: any): Promise<number> {
         throw new TypeORMError('deleteQueryBatch is not stubbed.')
     }
 

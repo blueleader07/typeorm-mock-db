@@ -16,6 +16,7 @@ let entityManager: any = null
 const map = new Map()
 
 export class DatasourceManagerOptions {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     entities?: ((Function | string | EntitySchema))[];
     synchronize?: boolean
 }
