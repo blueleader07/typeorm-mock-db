@@ -1,6 +1,6 @@
 {
   "name": "typeorm-mock-db",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Mock Database for Unit Tests",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
